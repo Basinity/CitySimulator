@@ -2,7 +2,7 @@
 {
     public class HumanListenBuskerState : State
     {
-        private HumanFSM humanFSM;
+        private readonly HumanFSM humanFSM;
         
         public HumanListenBuskerState(HumanFSM humanFSM) : base(humanFSM)
         {

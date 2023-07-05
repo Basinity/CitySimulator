@@ -1,7 +1,19 @@
-﻿namespace FSM
+﻿using System;
+using UnityEngine;
+using UnityEngine.AI;
+
+namespace FSM
 {
     public class HumanFSM : FiniteStateMachine
     {
+        public NavMeshAgent navMeshAgent;
+        public Transform destination;
+
+        public void Initialize(Transform targetDestination)
+        {
+            destination = targetDestination;
+        }
+        
         private void Start()
         {
             var HumanWalkState = new HumanWalkState(this);

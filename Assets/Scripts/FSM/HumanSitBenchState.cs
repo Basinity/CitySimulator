@@ -2,8 +2,8 @@
 {
     public class HumanSitBenchState : State
     {
-        private HumanFSM humanFSM;
-
+        private readonly HumanFSM humanFSM;
+        
         public HumanSitBenchState(HumanFSM humanFSM) : base(humanFSM)
         {
             this.humanFSM = humanFSM;
