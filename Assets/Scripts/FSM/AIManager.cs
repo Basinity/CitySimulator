@@ -48,7 +48,7 @@ namespace FSM
             {
                 targetNr = Random.Range(0, spawnPoints.Count - 1);
             } while (spawnNr == targetNr);
-            newAgent.Initialize(spawnPoints[targetNr]);
+            newAgent.SetDestination(spawnPoints[targetNr]);
 
             newAgent.transform.GetChild(Random.Range(0, agentsTypeCount - 1)).gameObject.SetActive(true);
         }

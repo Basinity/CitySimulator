@@ -1,4 +1,6 @@
-﻿namespace FSM
+﻿using System;
+
+namespace FSM
 {
     public abstract class State
     {
@@ -13,6 +15,6 @@
 
         public abstract void OnUpdate();
 
-        public abstract void OnExit();
+        public abstract void OnExit(Action onExit);
     }
 }

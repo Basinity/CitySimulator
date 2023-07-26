@@ -5,7 +5,7 @@ namespace FSM
 {
     public abstract class FiniteStateMachine : MonoBehaviour
     {
-        protected State currentState;
+        public State currentState;
         public readonly Dictionary<string, State> states = new();
 
         protected virtual void Update()
@@ -15,9 +15,8 @@ namespace FSM
 
         public void SwitchState(State newState)
         {
-            currentState.OnExit();
+            currentState.OnExit(currentState.OnEnter);
             currentState = newState;
-            currentState.OnEnter();
         }
     }
 }
