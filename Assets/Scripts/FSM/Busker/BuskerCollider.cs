@@ -1,13 +1,14 @@
+using System;
 using UnityEngine;
 
 namespace FSM
 {
     public class BuskerCollider : MonoBehaviour
     {
-        public void OnCollisionEnter(Collision collision)
+        public void OnTriggerEnter(Collider other)
         {
-            Debug.Log("A human collided with me!");
-            collision.gameObject.GetComponent<HumanFSM>().OnCilliderWithBuskerTrigger(collision);
+            if (!other.gameObject.CompareTag("NavAgent")) return;
+            other.gameObject.GetComponent<HumanFSM>().OnCollisionWithTrigger("ListenBusker");
         }
     }
 }

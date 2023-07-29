@@ -5,6 +5,7 @@ namespace FSM
 {
     public abstract class FiniteStateMachine : MonoBehaviour
     {
+        public string State; // To see current State in Editor
         public State currentState;
         public readonly Dictionary<string, State> states = new();
 
@@ -15,8 +16,9 @@ namespace FSM
 
         public void SwitchState(State newState)
         {
-            currentState.OnExit(currentState.OnEnter);
+            currentState?.OnExit(newState.OnEnter);
             currentState = newState;
+            State = currentState.ToString();
         }
     }
 }

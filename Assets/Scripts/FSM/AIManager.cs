@@ -12,7 +12,8 @@ namespace FSM
         [SerializeField] private Transform spawnPointsParent;
         [SerializeField] private Transform agentParent;
         [SerializeField] private HumanFSM agentPrefab;
-        private readonly List<Transform> spawnPoints = new();
+        public Transform Busker;
+        public readonly List<Transform> SpawnPoints = new();
         private int agentsTypeCount;
 
         private void Start()
@@ -21,7 +22,7 @@ namespace FSM
             foreach (Transform spawnPoint in spawnPointsParent.transform)
             {
                 spawnPoint.GetComponent<MeshRenderer>().enabled = false;
-                spawnPoints.Add(spawnPoint);
+                SpawnPoints.Add(spawnPoint);
             }
 
             for (var i = 0; i < numberOfAgents; i++)
@@ -40,17 +41,11 @@ namespace FSM
 
         private void SpawnAgent()
         {
-            var spawnNr = Random.Range(0, spawnPoints.Count - 1);
-            var newAgent = Instantiate(agentPrefab, spawnPoints[spawnNr].position, new Quaternion(), agentParent);
-
-            int targetNr;
-            do
-            {
-                targetNr = Random.Range(0, spawnPoints.Count - 1);
-            } while (spawnNr == targetNr);
-            newAgent.SetDestination(spawnPoints[targetNr]);
-
-            newAgent.transform.GetChild(Random.Range(0, agentsTypeCount - 1)).gameObject.SetActive(true);
+            var spawnNr = Random.Range(0, SpawnPoints.Count - 1);
+            var newAgent = Instantiate(agentPrefab, SpawnPoints[spawnNr].position, new Quaternion(), agentParent);
+            newAgent.destination = SpawnPoints[spawnNr];
+            
+            (newAgent.Skin = newAgent.transform.GetChild(Random.Range(0, agentsTypeCount - 1))).gameObject.SetActive(true);
         }
     }
 }

@@ -8,43 +8,54 @@ namespace FSM
     public class HumanFSM : FiniteStateMachine
     {
         [SerializeField, Range(0, 100)] private float goToBuskerChance;
+        public string state;
         public NavMeshAgent navMeshAgent;
         public Transform destination;
+        public Transform Skin;
+        private bool triggeredListenBusker;
         
         private void Start()
         {
             var HumanWalkState = new HumanWalkState(this);
             var HumanSitBenchState = new HumanSitBenchState(this);
             var HumanListenBuskerState = new HumanListenBuskerState(this);
+            var HumanInBuildingState = new HumanInBuildingState(this);
             
             states.Add("Walk", HumanWalkState);
             states.Add("SitBench", HumanSitBenchState);
             states.Add("ListenBusker", HumanListenBuskerState);
-
-            currentState = HumanWalkState;
-            currentState.OnEnter();
-        }
-        
-        public void SetDestination(Transform targetDestination)
-        {
-            destination = targetDestination;
-        }
-
-        
-        public void OnCollisionEnter(Collision collision)
-        {
-            OnCilliderWithBuskerTrigger(collision);
-        }
-
-        public void OnCilliderWithBuskerTrigger(Collision collision)
-        {
-            if (!collision.gameObject.CompareTag("BuskerTrigger")) return;
+            states.Add("InBuilding", HumanInBuildingState);
             
-            Debug.Log($"I collided with the Busker Trigger! {gameObject.name}");
-            if (goToBuskerChance >= Random.Range(0, 100))
+            SetNewDestination();
+            SwitchState(states["Walk"]);
+        }
+
+        public void OnCollisionWithTrigger(string trigger)
+        {
+            switch (trigger)
             {
-                SwitchState(states["ListenBusker"]);
+                case "ListenBusker":
+                    if (goToBuskerChance >= Random.Range(0, 100) && !triggeredListenBusker)
+                    {
+                        SwitchState(states["ListenBusker"]);
+                    }
+                    triggeredListenBusker = true;
+                    break;
+                case "SitBench":
+                    break;
             }
+
+        }
+
+        public void SetNewDestination()
+        {
+            var manager = AIManager.Instance;
+            int targetNr;
+            do
+            {
+                targetNr = Random.Range(0, manager.SpawnPoints.Count - 1);
+            } while (destination == manager.SpawnPoints[targetNr]);
+            destination = manager.SpawnPoints[targetNr];
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
-using Object = UnityEngine.Object;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace FSM
 {
@@ -14,21 +15,15 @@ namespace FSM
 
         public override void OnEnter()
         {
-            
         }
 
         public override void OnUpdate()
         {
             humanFSM.navMeshAgent.destination = humanFSM.destination.position;
-
-            if (humanFSM.transform.position == humanFSM.destination.position)
-            {
-                Object.Destroy(humanFSM.gameObject);
-            }
-
+            
             if ((humanFSM.destination.position - humanFSM.transform.position).sqrMagnitude < 2f)
             {
-                Object.Destroy(humanFSM.gameObject);
+                FSM.SwitchState(humanFSM.states["InBuilding"]);
             }
         }
 
