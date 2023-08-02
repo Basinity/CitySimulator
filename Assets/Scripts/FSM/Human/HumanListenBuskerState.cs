@@ -6,6 +6,7 @@ namespace FSM
 {
     public class HumanListenBuskerState : State
     {
+        private float radius;
         private readonly HumanFSM humanFSM;
         private float leavingTime;
         private Vector3 targetPosition;
@@ -19,13 +20,15 @@ namespace FSM
         {
             leavingTime = Random.Range(20, 40);
             var buskerPosition = AIManager.Instance.Busker.position;
-            targetPosition = new Vector3(buskerPosition.x + Random.Range(-5, 0), 0, buskerPosition.z + Random.Range(-5, 5));
+            radius = 4f;
+            var angle = Random.Range(110f, 250f);
+            targetPosition = new Vector3(radius * Mathf.Cos(angle) + buskerPosition.x, 0, radius * Mathf.Sin(angle) + buskerPosition.z);
         }
 
         public override void OnUpdate()
         {
             humanFSM.navMeshAgent.destination = targetPosition;
-            humanFSM.transform.LookAt(AIManager.Instance.Busker.position);
+            humanFSM.transform.LookAt(new Vector3(AIManager.Instance.Busker.position.x, humanFSM.transform.position.y, AIManager.Instance.Busker.position.z));
             leavingTime -= Time.deltaTime;
 
             if (leavingTime <= 0)

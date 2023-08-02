@@ -957,7 +957,7 @@ GameObject:
   - component: {fileID: 1488980510260626030}
   m_Layer: 0
   m_Name: Agent
-  m_TagString: NavAgent
+  m_TagString: HumanAgent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -997,7 +997,7 @@ Animator:
   m_GameObject: {fileID: 128674}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 897b34267f422c1499700402763d096e, type: 3}
-  m_Controller: {fileID: 9100000, guid: 3ed6a4ec809a6ef48b382b3285002327, type: 2}
+  m_Controller: {fileID: 9100000, guid: a8d8727a77c1b1c47a3c900c0040e775, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -1020,9 +1020,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6548969e7e340a7af04acc68a3cfa04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  State: 
   goToBuskerChance: 74.1
+  state: 
   navMeshAgent: {fileID: 6497769514985591447}
   destination: {fileID: 0}
+  Skin: {fileID: 0}
 --- !u!195 &6497769514985591447
 NavMeshAgent:
   m_ObjectHideFlags: 0

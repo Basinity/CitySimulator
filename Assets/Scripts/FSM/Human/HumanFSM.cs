@@ -8,7 +8,6 @@ namespace FSM
     public class HumanFSM : FiniteStateMachine
     {
         [SerializeField, Range(0, 100)] private float goToBuskerChance;
-        public string state;
         public NavMeshAgent navMeshAgent;
         public Transform destination;
         public Transform Skin;
