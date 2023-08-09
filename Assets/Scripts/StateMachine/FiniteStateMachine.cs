@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace FSM
+namespace StateMachine
 {
     public abstract class FiniteStateMachine : MonoBehaviour
     {

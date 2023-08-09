@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace FSM
+namespace StateMachine
 {
     public class HumanInBuildingState : State
     {

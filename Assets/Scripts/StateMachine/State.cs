@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FSM
+namespace StateMachine
 {
     public abstract class State
     {

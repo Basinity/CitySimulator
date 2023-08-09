@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace FSM
+namespace StateMachine
 {
     public class AgentCollider : MonoBehaviour
     {

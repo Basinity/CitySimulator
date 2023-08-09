@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 using Random = UnityEngine.Random;
 
-namespace FSM
+namespace StateMachine
 {
     public class AIManager : Singleton<AIManager>
     {
