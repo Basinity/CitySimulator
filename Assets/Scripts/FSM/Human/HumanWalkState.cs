@@ -1,6 +1,4 @@
 ﻿using System;
-using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace FSM
 {
@@ -20,7 +18,6 @@ namespace FSM
         public override void OnUpdate()
         {
             humanFSM.navMeshAgent.destination = humanFSM.destination.position;
-            
             if ((humanFSM.destination.position - humanFSM.transform.position).sqrMagnitude < 2f)
             {
                 FSM.SwitchState(humanFSM.states["InBuilding"]);
