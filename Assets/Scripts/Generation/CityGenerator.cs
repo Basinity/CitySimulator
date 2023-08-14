@@ -1,137 +1,272 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Generation;
+using StateMachine;
+using UnityEditor;
 using UnityEngine;
+using UnityEditor.AI;
+using Utility;
 using Random = UnityEngine.Random;
 
-public class CityGenerator : MonoBehaviour
+public class CityGenerator : Singleton<CityGenerator>
 {
-    private enum TileType
-    {
-        Free = -1,
-        Road = 0
-    }
+    private GeneratorSettings generatorSettings;
+    [SerializeField] private CityCell cellPrefab;
+    [SerializeField] private bool leftMouseToRedraw;
+    [SerializeField] private bool spawnBuildings;
+
+    private CityCell[,] map;
+    private int iterations;
     
-    [SerializeField] private int mapHeight;
-    [SerializeField] private int mapWidth;
-    [SerializeField, Range(0, 100)] private int streetProbability;
-
-    private int[,] map;
-
     private void Awake()
     {
-        InitializeMap();
-        GenerateMap();
-
-        Debug.Log(GetMapLog());
+        DrawMap();
     }
 
-    private void InitializeMap()
+    private void Update()
     {
-        map = new int[mapWidth, mapHeight];
-
-        for (var y = 0; y < mapHeight; y++)
+        if (Input.GetMouseButtonDown(0) && leftMouseToRedraw)
         {
-            for (var x = 0; x < mapWidth; x++)
-            {
-                map[x, y] = (int)TileType.Free;
-            }
+            DrawMap();
         }
     }
 
-    private void GenerateMap()
+    private void DrawMap()
     {
-        var startPos = new Vector2Int((int)(mapWidth * 0.5f), (int)(mapHeight * 0.5f));
-        map[startPos.x, startPos.y] = 0;
+        generatorSettings = AssetDatabase.LoadAssetAtPath<GeneratorSettings>("Assets/Scripts/Generation/GeneratorSettings.asset");
+        foreach (Transform child in transform) Destroy(child.gameObject);
+        map = new CityCell[generatorSettings.width, generatorSettings.height];
+        iterations = 0;
 
-        var currentCount = 0;
-        var positionsToExpand = new Queue<Vector2Int>();
-        positionsToExpand.Enqueue(startPos);
-
-        while (positionsToExpand.Count > 0)
+        for (var y = 0; y < generatorSettings.height; y++)
         {
-            var positionToExpand = positionsToExpand.Dequeue();
-
-            var positionsToCheck = new[]
+            for (var x = 0; x < generatorSettings.width; x++)
             {
-                positionToExpand + Vector2Int.up,
-                positionToExpand + Vector2Int.down,
-                positionToExpand + Vector2Int.left,
-                positionToExpand + Vector2Int.right
-            };
-
-            foreach (var positionToCheck in positionsToCheck)
-            {
-                // Check if in the map borders
-                if (positionToCheck.x < 0 || positionToCheck.x >= mapWidth ||
-                    positionToCheck.y < 0 || positionToCheck.y >= mapHeight)
-                    continue;
-
-                // Check if is not already a street
-                if (map[positionToCheck.x, positionToCheck.y] != (int)TileType.Free)
-                    continue;
-
-                // Random percentage
-                //if (Random.Range(0, 100) > streetProbability)
-                //    continue;
-                
-                // Check neighbours
-                var neighbourCount = GetNeighbourCount(positionToCheck);
-                if (neighbourCount < 2)
-                {
-                    if (Random.Range(0, 100) > streetProbability)
-                        continue;
-                }
-
-                map[positionToCheck.x, positionToCheck.y] = (int)TileType.Road;
-                positionsToExpand.Enqueue(positionToCheck);
-                currentCount++;
+                var newCell = Instantiate(cellPrefab, new Vector3(x * 20, 0, y * 20), Quaternion.identity, transform);
+                newCell.possibleTiles = generatorSettings.tiles.ToArray();
+                newCell.position = new Vector2Int(x, y);
+                map[x, y] = newCell;
             }
+        }
+
+        StartCoroutine(GetNextCell());
+    }
+
+    private IEnumerator GetNextCell()
+    {
+        var mapList = map.Cast<CityCell>().ToList();
+
+        mapList.RemoveAll(c => c.collapsed);
+
+        mapList.Sort((a, b) => a.possibleTiles.Length - b.possibleTiles.Length);
+
+        var arrLength = mapList[0].possibleTiles.Length;
+        int stopIndex = default;
+
+        for (var i = 1; i < mapList.Count; i++)
+        {
+            if (mapList[i].possibleTiles.Length > arrLength)
+            {
+                stopIndex = i;
+                break;
+            }
+        }
+
+        if (stopIndex > 0)
+        {
+            mapList.RemoveRange(stopIndex, mapList.Count - stopIndex);
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        var cellToCollapse = mapList[Random.Range(0, mapList.Count)];
+        if (cellToCollapse.possibleTiles.Length > 0)
+            CollapseCell(cellToCollapse);
+        else
+            ResetCell(cellToCollapse);
+
+    }
+
+    private void CollapseCell(CityCell cell)
+    {
+        cell.collapsed = true;
+
+        var selectedTile = cell.possibleTiles[Random.Range(0, cell.possibleTiles.Length)];
+
+        cell.possibleTiles = new[] { selectedTile };
+        Instantiate(selectedTile.tile, cell.transform.position, Quaternion.identity, cell.transform);
+
+        var cellNeighbours = new List<Vector2Int>
+        {
+            new(0, -1),
+            new(-1, 0),
+            new(0, 1),
+            new(1, 0),
+            new(0, -2),
+            new(0, 2),
+            new(-2, 0),
+            new(2, 0),
+            new(-1, -1),
+            new(1, -1),
+            new(-1, 1),
+            new(1, 1)
+        };
+        
+        foreach (var neighbour in cellNeighbours)
+        {
+            UpdateCell(new Vector2Int(cell.position.x + neighbour.x, cell.position.y + neighbour.y));
+        }
+
+        iterations++;
+        if (iterations < generatorSettings.width * generatorSettings.height)
+        {
+            StartCoroutine(GetNextCell());
+        }
+        else
+        {
+            if (spawnBuildings) SpawnBuildings();
         }
     }
 
-    private int GetNeighbourCount(Vector2Int position)
+    private void ResetCell(CityCell cell)
     {
-        var count = 0;
-
-        var positionsToSearch = new[]
+        var neighbours = new List<Vector2Int>
         {
-            position + Vector2Int.up,
-            position + Vector2Int.down,
-            position + Vector2Int.left,
-            position + Vector2Int.right
+            new(0, 0),
+            new(0, -1),
+            new(-1, 0),
+            new(0, 1),
+            new(1, 0),
         };
 
-        foreach (var positionToSearch in positionsToSearch)
+        foreach (var neighbour in neighbours)
         {
-            if (positionToSearch.x < 0 || positionToSearch.x >= mapWidth ||
-                positionToSearch.y < 0 || positionToSearch.y >= mapHeight)
-                continue;
-
-            if (map[positionToSearch.x, positionToSearch.y] != (int)TileType.Free)
-                count++;
+            var x = cell.position.x + neighbour.x;
+            var y = cell.position.y + neighbour.y;
+            if (y > generatorSettings.height - 1 || x > generatorSettings.width - 1 || y < 0 || x < 0) continue;
+            var neighbourCell = map[x, y];
+            if (neighbourCell.collapsed) iterations--;
+            neighbourCell.collapsed = false;
+            neighbourCell.possibleTiles = generatorSettings.tiles.ToArray();
+            if (neighbourCell.transform.childCount > 0) Destroy(neighbourCell.transform.GetChild(0).gameObject);
+            UpdateCell(cell.position);
         }
         
-        return count;
+        StartCoroutine(GetNextCell());
     }
 
-    private string GetMapLog()
+    private void UpdateCell(Vector2Int pos)
     {
-        var output = "";
+        var x = pos.x;
+        var y = pos.y;
+        var newMap = (CityCell[,])map.Clone();
 
-        for (var y = 0; y < mapHeight; y++)
+        if (y > generatorSettings.height - 1 || x > generatorSettings.width - 1 || y < 0 || x < 0) return;
+
+        if (map[x, y].collapsed)
         {
-            output += "|";
-            for (var x = 0; x < mapWidth; x++)
-            {
-                var num = map[x, y];
-                if (num >= 0)
-                    output += " ";
-                output += $"{num}|";
-            }
-
-            output += "\n";
+            newMap[x, y] = map[x, y];
+            return;
         }
 
-        return output;
+        var possibleTiles = newMap[x, y].possibleTiles.ToList();
+
+        // Check Up
+        if (y < generatorSettings.height - 1)
+        {
+            var validTiles = new List<TileSettings>();
+
+            foreach (var possibleTile in map[x, y + 1].possibleTiles)
+            {
+                var valid = possibleTile.downNeighbours;
+                foreach (var tile in valid) tile.tileSettings.probability = tile.probability;
+
+                validTiles.AddRange(valid.Select(properties => properties.tileSettings).Except(validTiles));
+            }
+
+            CheckValidity(possibleTiles, validTiles);
+        }
+
+        // Check Right
+        if (x < generatorSettings.width - 1)
+        {
+            var validTiles = new List<TileSettings>();
+
+            foreach (var possibleTile in map[x + 1, y].possibleTiles)
+            {
+                var valid = possibleTile.leftNeighbours;
+                foreach (var tile in valid) tile.tileSettings.probability = tile.probability;
+
+                validTiles.AddRange(valid.Select(properties => properties.tileSettings).Except(validTiles));
+            }
+
+            CheckValidity(possibleTiles, validTiles);
+        }
+
+        // Check Down
+        if (y > 0)
+        {
+            var validTiles = new List<TileSettings>();
+
+            foreach (var possibleTile in map[x, y - 1].possibleTiles)
+            {
+                var valid = possibleTile.upNeighbours;
+                foreach (var tile in valid) tile.tileSettings.probability = tile.probability;
+
+                validTiles.AddRange(valid.Select(properties => properties.tileSettings).Except(validTiles));
+            }
+
+            CheckValidity(possibleTiles, validTiles);
+        }
+
+        // Check Up
+        if (x > 0)
+        {
+            var validTiles = new List<TileSettings>();
+
+            foreach (var possibleTile in map[x - 1, y].possibleTiles)
+            {
+                var valid = possibleTile.rightNeighbours;
+                foreach (var tile in valid) tile.tileSettings.probability = tile.probability;
+
+                validTiles.AddRange(valid.Select(properties => properties.tileSettings).Except(validTiles));
+            }
+
+            CheckValidity(possibleTiles, validTiles);
+        }
+        
+        // TODO: CALCULATE PROBABILITIES
+        
+        newMap[x, y].possibleTiles = possibleTiles.ToArray();
+        map = newMap;
+    }
+
+    private void CheckValidity(List<TileSettings> possibleTiles, List<TileSettings> validOption)
+    {
+        for (var x = possibleTiles.Count - 1; x >= 0; x--)
+        {
+            var element = possibleTiles[x];
+            if (!validOption.Contains(element))
+            {
+                possibleTiles.RemoveAt(x);
+            }
+        }
+    }
+
+    private void SpawnBuildings()
+    {
+        for (var y = 0; y < generatorSettings.height; y++)
+        {
+            for (var x = 0; x < generatorSettings.width; x++)
+            {
+                if (map[x, y].possibleTiles[0] != generatorSettings.buildingTile) continue;
+
+                Instantiate(generatorSettings.buildings[Random.Range(0, generatorSettings.buildings.Count)], new Vector3(x * 20f + 12.5f, 0f, y * 20f + 12.5f), Quaternion.identity, map[x, y].transform);
+            }
+        }
+        
+        NavMeshBuilder.BuildNavMesh();
+        StartCoroutine(AIManager.Instance.Initialize());
     }
 }

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6c2e8e1342c4fa385ca990938f4a882, type: 3}
+  m_Name: Simple
+  m_EditorClassIdentifier: 
+  generatorSettingName: Simple
+  width: 5
+  height: 5
+  buildingTile: {fileID: 11400000, guid: d810aef4611205c47b9490b73507639d, type: 2}
+  tiles:
+  - {fileID: 11400000, guid: d810aef4611205c47b9490b73507639d, type: 2}
+  - {fileID: 11400000, guid: c8e79bdf7e9041049b6d5222193c9072, type: 2}
+  - {fileID: 11400000, guid: 538762b7883e1ff42b7a95d3c207f780, type: 2}
+  - {fileID: 11400000, guid: d7f066d2a4247ca448da9c567fb4af32, type: 2}
+  buildings:
+  - {fileID: 691326993144311985, guid: 2893fe056c229ac4f9fa5eb7aa3edc34, type: 3}

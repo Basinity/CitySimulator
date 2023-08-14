@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 763fd332baac423b85e1b7ba6a666646, type: 3}
+  m_Name: Road T Down
+  m_EditorClassIdentifier: 
+  tileName: Road T Down
+  tile: {fileID: -727078906599805701, guid: 3f3ab774d36b38a4dacf8bd3666f5bfe, type: 3}
+  upNeighbours:
+  - tileSettings: {fileID: 11400000, guid: 538762b7883e1ff42b7a95d3c207f780, type: 2}
+    probability: 100
+  downNeighbours:
+  - tileSettings: {fileID: 11400000, guid: d810aef4611205c47b9490b73507639d, type: 2}
+    probability: 100
+  leftNeighbours:
+  - tileSettings: {fileID: 11400000, guid: c8e79bdf7e9041049b6d5222193c9072, type: 2}
+    probability: 100
+  rightNeighbours:
+  - tileSettings: {fileID: 11400000, guid: c8e79bdf7e9041049b6d5222193c9072, type: 2}
+    probability: 100
+  probability: 0
