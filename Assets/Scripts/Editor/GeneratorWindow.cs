@@ -181,7 +181,7 @@ public class GeneratorWindow : EditorWindow
     {
         AssetDatabase.CopyAsset(
             $"Assets/ScriptableObjects/GeneratorSettings/{generatorSettingsList[generatorSettingsIndex].name}.asset",
-            "Assets/Scripts/Generation/GeneratorSettings.asset");
+            "Assets/Resources/GeneratorSettings.asset");
     }
 
     private void NewTileSettings()

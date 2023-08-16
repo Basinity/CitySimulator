@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6c2e8e1342c4fa385ca990938f4a882, type: 3}
-  m_Name: GeneratorSettings
+  m_Name: Big Map
   m_EditorClassIdentifier: 
-  generatorSettingName: Small Map
-  width: 10
-  height: 10
+  generatorSettingName: Big Map
+  width: 50
+  height: 50
   buildingTile: {fileID: 11400000, guid: d810aef4611205c47b9490b73507639d, type: 2}
   tiles:
   - {fileID: 11400000, guid: d7f066d2a4247ca448da9c567fb4af32, type: 2}

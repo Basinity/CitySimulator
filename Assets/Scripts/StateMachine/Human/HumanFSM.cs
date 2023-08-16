@@ -52,7 +52,7 @@ namespace StateMachine
             do
             {
                 targetNr = Random.Range(0, manager.SpawnPoints.Count - 1);
-            } while (destination == manager.SpawnPoints[targetNr]);
+            } while (destination == manager.SpawnPoints[targetNr].transform);
             destination = manager.SpawnPoints[targetNr].transform;
         }
     }

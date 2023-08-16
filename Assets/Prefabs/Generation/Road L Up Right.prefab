@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8944674127596844802}
   - component: {fileID: 6356275071483131266}
   - component: {fileID: 7918605919171171159}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Sidewalk_Straight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 2646991349065727075}
   - component: {fileID: 2646991349064765995}
   - component: {fileID: 2619879921563397091}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Sidewalk_Corner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -204,7 +204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1622853578736783982}
   - component: {fileID: -9209423658186094934}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Road L Up Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -254,14 +254,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c03a4f568f9f0404187d5acaaf10a657, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  upNeighbours:
-  - {fileID: 1835322034749167191, guid: 059218c12f58c7748bba5bbd9dad6c1c, type: 3}
-  downNeighbours:
-  - {fileID: -5617219671120693153, guid: 2099ab93e7447f6438b6e7bbd338506c, type: 3}
-  leftNeighbours:
-  - {fileID: -5617219671120693153, guid: 2099ab93e7447f6438b6e7bbd338506c, type: 3}
-  rightNeighbours:
-  - {fileID: 3393245809488332262, guid: 5db895854da04124995cca83b7b77c1a, type: 3}
 --- !u!1 &3551376614227452362
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,7 +266,7 @@ GameObject:
   - component: {fileID: 3551376614226467002}
   - component: {fileID: 3551376614225777518}
   - component: {fileID: 3576730242695342358}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Sidewalk_Straight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -371,7 +363,7 @@ GameObject:
   - component: {fileID: 8205386271843423959}
   - component: {fileID: 1442298354438740534}
   - component: {fileID: 1912584926422871096}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Sidewalk_Straight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -468,7 +460,7 @@ GameObject:
   - component: {fileID: 4743631330060069135}
   - component: {fileID: 2396397616047207101}
   - component: {fileID: 4543911512022507426}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Sidewalk_Straight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -565,7 +557,7 @@ GameObject:
   - component: {fileID: 7620050878803770317}
   - component: {fileID: 3721347883027255686}
   - component: {fileID: 8591807599258757867}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Sidewalk_Straight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -662,7 +654,7 @@ GameObject:
   - component: {fileID: 687686279099382770}
   - component: {fileID: 215849676348594051}
   - component: {fileID: 7490029380546761893}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Sidewalk_Straight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -759,7 +751,7 @@ GameObject:
   - component: {fileID: 7812269640334628302}
   - component: {fileID: 7812269640333609264}
   - component: {fileID: 7819234287833224032}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Road_Bare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -856,7 +848,7 @@ GameObject:
   - component: {fileID: 7812269640509881764}
   - component: {fileID: 7812269640510955866}
   - component: {fileID: 7819234287605299978}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Road_Bare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -953,7 +945,7 @@ GameObject:
   - component: {fileID: 7812269640654120794}
   - component: {fileID: 7812269640655076260}
   - component: {fileID: 7819234287477957108}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Road_Bare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1050,7 +1042,7 @@ GameObject:
   - component: {fileID: 7812269640662486452}
   - component: {fileID: 7812269640663437642}
   - component: {fileID: 7819234287486356250}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Road_Bare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1147,7 +1139,7 @@ GameObject:
   - component: {fileID: 8139527524226899584}
   - component: {fileID: 8139527524226899585}
   - component: {fileID: 8139527524226899586}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Road_Crossing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1244,7 +1236,7 @@ GameObject:
   - component: {fileID: 8139527524367596721}
   - component: {fileID: 8139527524367596722}
   - component: {fileID: 8139527524367596723}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Road_Crossing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1341,7 +1333,7 @@ GameObject:
   - component: {fileID: 8139527524758939690}
   - component: {fileID: 8139527524758939691}
   - component: {fileID: 8139527524758939692}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Road_Crossing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1438,7 +1430,7 @@ GameObject:
   - component: {fileID: 8139527525596550574}
   - component: {fileID: 8139527525596550575}
   - component: {fileID: 8139527525596550560}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Sidewalk_Corner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1535,7 +1527,7 @@ GameObject:
   - component: {fileID: 8139527526278914365}
   - component: {fileID: 8139527526278914366}
   - component: {fileID: 8139527526278914367}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SM_Env_Road_Crossing
   m_TagString: Untagged
   m_Icon: {fileID: 0}

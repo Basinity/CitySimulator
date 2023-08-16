@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Generation;
 using StateMachine;
-using UnityEditor;
 using UnityEngine;
-using UnityEditor.AI;
 using Utility;
 using Random = UnityEngine.Random;
+#if UNITY_EDITOR
+using UnityEditor.AI;
+#endif
 
 public class CityGenerator : Singleton<CityGenerator>
 {
@@ -15,10 +17,11 @@ public class CityGenerator : Singleton<CityGenerator>
     [SerializeField] private CityCell cellPrefab;
     [SerializeField] private bool leftMouseToRedraw;
     [SerializeField] private bool spawnBuildings;
+    [SerializeField, Range(0, 100)] private float spawnBuildingProbability;
 
     private CityCell[,] map;
     private int iterations;
-    
+
     private void Awake()
     {
         DrawMap();
@@ -28,17 +31,20 @@ public class CityGenerator : Singleton<CityGenerator>
     {
         if (Input.GetMouseButtonDown(0) && leftMouseToRedraw)
         {
+            #if UNITY_STANDALONE
             DrawMap();
+            #endif
         }
     }
 
     private void DrawMap()
     {
-        generatorSettings = AssetDatabase.LoadAssetAtPath<GeneratorSettings>("Assets/Scripts/Generation/GeneratorSettings.asset");
+        generatorSettings = Resources.Load<GeneratorSettings>("GeneratorSettings");
+
         foreach (Transform child in transform) Destroy(child.gameObject);
         map = new CityCell[generatorSettings.width, generatorSettings.height];
         iterations = 0;
-
+        
         for (var y = 0; y < generatorSettings.height; y++)
         {
             for (var x = 0; x < generatorSettings.width; x++)
@@ -49,43 +55,23 @@ public class CityGenerator : Singleton<CityGenerator>
                 map[x, y] = newCell;
             }
         }
-
+        
         StartCoroutine(GetNextCell());
     }
 
     private IEnumerator GetNextCell()
     {
         var mapList = map.Cast<CityCell>().ToList();
-
         mapList.RemoveAll(c => c.collapsed);
 
-        mapList.Sort((a, b) => a.possibleTiles.Length - b.possibleTiles.Length);
-
-        var arrLength = mapList[0].possibleTiles.Length;
-        int stopIndex = default;
-
-        for (var i = 1; i < mapList.Count; i++)
-        {
-            if (mapList[i].possibleTiles.Length > arrLength)
-            {
-                stopIndex = i;
-                break;
-            }
-        }
-
-        if (stopIndex > 0)
-        {
-            mapList.RemoveRange(stopIndex, mapList.Count - stopIndex);
-        }
-
         yield return new WaitForEndOfFrame();
-
-        var cellToCollapse = mapList[Random.Range(0, mapList.Count)];
+        
+        var cellToCollapse = GetCityCellWithLowestPossibilities(mapList);
         if (cellToCollapse.possibleTiles.Length > 0)
             CollapseCell(cellToCollapse);
         else
             ResetCell(cellToCollapse);
-
+        
     }
 
     private void CollapseCell(CityCell cell)
@@ -115,7 +101,7 @@ public class CityGenerator : Singleton<CityGenerator>
         
         foreach (var neighbour in cellNeighbours)
         {
-            UpdateCell(new Vector2Int(cell.position.x + neighbour.x, cell.position.y + neighbour.y));
+            ThreadPool.QueueUserWorkItem(UpdateCell,new Vector2Int(cell.position.x + neighbour.x, cell.position.y + neighbour.y));
         }
 
         iterations++;
@@ -150,16 +136,17 @@ public class CityGenerator : Singleton<CityGenerator>
             neighbourCell.collapsed = false;
             neighbourCell.possibleTiles = generatorSettings.tiles.ToArray();
             if (neighbourCell.transform.childCount > 0) Destroy(neighbourCell.transform.GetChild(0).gameObject);
-            UpdateCell(cell.position);
+            ThreadPool.QueueUserWorkItem(UpdateCell, cell.position);
         }
         
         StartCoroutine(GetNextCell());
     }
 
-    private void UpdateCell(Vector2Int pos)
+    private void UpdateCell(object pos)
     {
-        var x = pos.x;
-        var y = pos.y;
+        var position = (Vector2Int)pos;
+        var x = position.x;
+        var y = position.y;
         var newMap = (CityCell[,])map.Clone();
 
         if (y > generatorSettings.height - 1 || x > generatorSettings.width - 1 || y < 0 || x < 0) return;
@@ -262,11 +249,29 @@ public class CityGenerator : Singleton<CityGenerator>
             {
                 if (map[x, y].possibleTiles[0] != generatorSettings.buildingTile) continue;
 
-                Instantiate(generatorSettings.buildings[Random.Range(0, generatorSettings.buildings.Count)], new Vector3(x * 20f + 12.5f, 0f, y * 20f + 12.5f), Quaternion.identity, map[x, y].transform);
+                if (Random.Range(0, 100) < spawnBuildingProbability)
+                    Instantiate(generatorSettings.buildings[Random.Range(0, generatorSettings.buildings.Count)], new Vector3(x * 20f, 0f, y * 20f), Quaternion.identity, map[x, y].transform);
             }
         }
         
+        #if UNITY_EDITOR
         NavMeshBuilder.BuildNavMesh();
         StartCoroutine(AIManager.Instance.Initialize());
+        #endif
+    }
+    
+    private static CityCell GetCityCellWithLowestPossibilities(List<CityCell> list)
+    {
+        var min = list[0].possibleTiles.Length;
+        var minIndex = 0;
+
+        for (var i = 1; i < list.Count; ++i) {
+            if (list[i].possibleTiles.Length < min) {
+                min = list[i].possibleTiles.Length;
+                minIndex = i;
+            }
+        }
+
+        return list[minIndex];
     }
 }
