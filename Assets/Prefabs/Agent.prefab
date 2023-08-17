@@ -1022,10 +1022,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   State: 
-  goToBuskerChance: 74.1
   navMeshAgent: {fileID: 6497769514985591447}
   destination: {fileID: 0}
   Skin: {fileID: 0}
+  Animator: {fileID: 9581884}
+  walkingSpeed: 2
+  runningSpeed: 4
 --- !u!195 &6497769514985591447
 NavMeshAgent:
   m_ObjectHideFlags: 0

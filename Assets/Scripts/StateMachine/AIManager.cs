@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Utility;
 using Random = UnityEngine.Random;
@@ -11,12 +12,17 @@ namespace StateMachine
         [SerializeField] private int numberOfAgents;
         [SerializeField] private Transform agentParent;
         [SerializeField] private HumanFSM agentPrefab;
+        [Range(0, 100)] public float goToBuskerChance;
+        [Range(0, 100)] public float goToBenchChance;
         public Transform Busker;
+        public Transform[] Benches;
+        public bool[] BenchesTaken;
         public readonly List<AgentSpawner> SpawnPoints = new();
         private int agentsTypeCount;
-
+        
         public IEnumerator Initialize()
         {
+            BenchesTaken = Benches.Select(bench => false).ToArray();
             agentsTypeCount = agentPrefab.transform.childCount - 1;
 
             for (var i = 0; i < numberOfAgents; i++)

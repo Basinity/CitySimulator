@@ -5,11 +5,9 @@ using System.Threading;
 using Generation;
 using StateMachine;
 using UnityEngine;
+using UnityEngine.AI;
 using Utility;
 using Random = UnityEngine.Random;
-#if UNITY_EDITOR
-using UnityEditor.AI;
-#endif
 
 public class CityGenerator : Singleton<CityGenerator>
 {
@@ -111,7 +109,7 @@ public class CityGenerator : Singleton<CityGenerator>
         }
         else
         {
-            if (spawnBuildings) SpawnBuildings();
+            if (spawnBuildings) StartCoroutine(SpawnBuildings());
         }
     }
 
@@ -241,7 +239,7 @@ public class CityGenerator : Singleton<CityGenerator>
         }
     }
 
-    private void SpawnBuildings()
+    private IEnumerator SpawnBuildings()
     {
         for (var y = 0; y < generatorSettings.height; y++)
         {
@@ -254,8 +252,8 @@ public class CityGenerator : Singleton<CityGenerator>
             }
         }
         
+        yield return new WaitForSeconds(1f);
         #if UNITY_EDITOR
-        NavMeshBuilder.BuildNavMesh();
         StartCoroutine(AIManager.Instance.Initialize());
         #endif
     }

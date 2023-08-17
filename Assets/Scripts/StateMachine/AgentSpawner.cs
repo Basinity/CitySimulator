@@ -1,10 +1,9 @@
-using System;
 using StateMachine;
 using UnityEngine;
 
 public class AgentSpawner : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
         AIManager.Instance.SpawnPoints.Add(this);
     }

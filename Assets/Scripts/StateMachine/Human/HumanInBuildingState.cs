@@ -25,7 +25,7 @@ namespace StateMachine
         {
             timeInBuilding -= Time.deltaTime;
 
-            if (timeInBuilding <= 0)
+            if (timeInBuilding <= 0 && !WeatherManager.Instance.isRaining)
             {
                 FSM.SwitchState(humanFSM.states["Walk"]);
             }

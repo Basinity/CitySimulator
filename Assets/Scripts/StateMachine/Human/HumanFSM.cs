@@ -6,12 +6,15 @@ namespace StateMachine
 {
     public class HumanFSM : FiniteStateMachine
     {
-        [SerializeField, Range(0, 100)] private float goToBuskerChance;
         public NavMeshAgent navMeshAgent;
         public Transform destination;
         public Transform Skin;
+        public Animator Animator;
+        public float walkingSpeed;
+        public float runningSpeed;
         private bool triggeredListenBusker;
-        
+        private bool triggeredSitBench;
+
         private void Start()
         {
             var HumanWalkState = new HumanWalkState(this);
@@ -25,6 +28,7 @@ namespace StateMachine
             states.Add("InBuilding", HumanInBuildingState);
             
             SetNewDestination();
+            states["Walk"].OnEnter();
             SwitchState(states["Walk"]);
         }
 
@@ -33,16 +37,20 @@ namespace StateMachine
             switch (trigger)
             {
                 case "ListenBusker":
-                    if (goToBuskerChance >= Random.Range(0, 100) && !triggeredListenBusker)
+                    if (AIManager.Instance.goToBuskerChance >= Random.Range(0, 100) && !triggeredListenBusker && !WeatherManager.Instance.isRaining)
                     {
                         SwitchState(states["ListenBusker"]);
                     }
                     triggeredListenBusker = true;
                     break;
                 case "SitBench":
+                    if (AIManager.Instance.goToBenchChance >= Random.Range(0, 100) && !triggeredSitBench && !WeatherManager.Instance.isRaining)
+                    {
+                        SwitchState(states["SitBench"]);
+                    }
+                    triggeredSitBench = true;
                     break;
             }
-
         }
 
         public void SetNewDestination()
