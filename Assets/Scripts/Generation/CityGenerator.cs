@@ -5,7 +5,7 @@ using System.Threading;
 using Generation;
 using StateMachine;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEditor.AI;
 using Utility;
 using Random = UnityEngine.Random;
 
@@ -205,7 +205,7 @@ public class CityGenerator : Singleton<CityGenerator>
             CheckValidity(possibleTiles, validTiles);
         }
 
-        // Check Up
+        // Check Left
         if (x > 0)
         {
             var validTiles = new List<TileSettings>();
@@ -254,6 +254,7 @@ public class CityGenerator : Singleton<CityGenerator>
         
         yield return new WaitForSeconds(1f);
         #if UNITY_EDITOR
+        NavMeshBuilder.BuildNavMesh();
         StartCoroutine(AIManager.Instance.Initialize());
         #endif
     }

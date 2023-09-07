@@ -5,8 +5,8 @@ namespace StateMachine
 {
     public abstract class FiniteStateMachine : MonoBehaviour
     {
-        public string State; // To see current State in Editor
-        public State currentState;
+        public string State; // Only to see current State in Editor Inspector
+        private State currentState;
         public readonly Dictionary<string, State> states = new();
 
         protected virtual void Update()
