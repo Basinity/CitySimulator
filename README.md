@@ -62,8 +62,6 @@ The window has tabs for general settings and per-tile settings, and can create, 
 | :---: | :---: |
 | ![Generator tool sketch](docs/enginetool1.png) | ![Generator tool sketch](docs/enginetool2.png) |
 
-*Sketch of the tool's two tabs: Generator Settings (width, height, tiles) and Tile Settings (the allowed neighbors in each direction).*
-
 ### Multithreading experiment
 
 Larger cities take noticeably longer to generate, roughly **3 seconds for a 20×20** grid and **~19 seconds for a 50×50**. The most expensive part is the neighbor-constraint propagation, so I tried to speed it up by offloading each neighbor update onto the .NET `ThreadPool` (`ThreadPool.QueueUserWorkItem` in `CityGenerator.cs`). I chose thread-pool work items specifically because they spin up and tear down in milliseconds, which suits the short, bursty nature of a per-neighbor update.
