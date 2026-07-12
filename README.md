@@ -1,5 +1,9 @@
 # City Simulator
 
+| | |
+| :---: | :---: |
+| ![City thumbnail](docs/thumbnail1.png) | ![Pedestrians thumbnail](docs/thumbnail2.png) |
+
 A small Unity city that generates itself and fills with pedestrians who live their own little lives: walking to destinations, stopping to listen to a street busker, sitting down on a park bench, and hurrying indoors when it starts to rain.
 
 This was my final project for the **Games Programming Diploma** at the SAE Institute (2023). It is a **learning project**: the whole thing exists so I could implement, and properly understand, two techniques from scratch: **Wave Function Collapse** for procedural generation and a **Finite State Machine** for agent behavior. Both are explained below.
@@ -7,6 +11,16 @@ This was my final project for the **Games Programming Diploma** at the SAE Insti
 - **Engine:** Unity `2021.3.21f1` (Universal Render Pipeline, C#)
 - **Scenes:** `CityGeneration` (watch a city build itself) and `CityDemo` (a pre-built city populated with pedestrians)
 - **Own code:** `Assets/Scripts` and `Assets/GameManager.cs`; everything else under `Assets/` (Synty POLYGON City, Quibli, TextMesh Pro) is third-party art/tooling used to make it look nice.
+
+---
+
+**What I built from scratch / learned:**
+
+- **Wave Function Collapse** procedural generation, implemented from scratch and driven entirely by ScriptableObjects.
+- A custom **Unity Editor tool** for authoring the tile set and its adjacency rules without touching code.
+- A **Finite State Machine** driving pedestrian behavior (walking, sitting, listening, sheltering indoors).
+- A **weather system** wired into the FSM via events, so rain visibly clears the streets.
+- A **multithreading experiment** on the constraint propagation, benchmarked.
 
 ---
 
@@ -27,6 +41,8 @@ My implementation lives in `Assets/Scripts/Generation` and is driven entirely by
 
 Generation runs as a coroutine (one collapse per frame), so in the `CityGeneration` scene you can literally watch the city resolve itself tile by tile.
 
+![City generating itself tile by tile](docs/generation.gif)
+
 > **A note on the code:** tile selection during a collapse is currently a uniform random pick from the remaining candidates. The per-neighbor `probability` fields exist in the data model for weighting adjacencies, but the weighting itself was left as a `// TODO`, an honest edge of the learning project.
 
 ![Wave Function Collapse concept](docs/wavefunctioncollapse.png)
@@ -42,7 +58,9 @@ To make the tile set editable without recompiling, I built a custom Unity Editor
 
 The window has tabs for general settings and per-tile settings, and can create, rename, duplicate, and delete these assets directly.
 
-![Generator tool sketch](docs/engine-tool.png)
+| Generator Settings | Tile Settings |
+| :---: | :---: |
+| ![Generator tool sketch](docs/enginetool1.png) | ![Generator tool sketch](docs/enginetool2.png) |
 
 *Sketch of the tool's two tabs: Generator Settings (width, height, tiles) and Tile Settings (the allowed neighbors in each direction).*
 
@@ -55,8 +73,6 @@ The honest result: it helped, but only a little. Across repeated runs the multit
 | 20×20 generation (50 samples) | 50×50 generation (20 samples) |
 | :---: | :---: |
 | ![20x20 benchmark](docs/benchmark-20x20.png) | ![50x50 benchmark](docs/benchmark-50x50.png) |
-
-*In the charts, "Kein Multithreading" = without multithreading, "Mit Multithreading" = with multithreading; the vertical axis is time in milliseconds.*
 
 ---
 
@@ -84,6 +100,8 @@ Agents don't decide to sit or listen on their own; trigger volumes (`AgentTrigge
 ### Weather ties it together
 
 `WeatherManager` toggles rain across the city (and a URP color-grading shift) and raises an event when the weather changes. The FSM listens: when it starts raining, pedestrians switch to a run animation and hurry off the benches and away from the busker toward the nearest building, so the streets visibly empty out during a downpour.
+
+![Pedestrians moving and reacting to the weather](docs/pedestrian.gif)
 
 ### UML class diagram
 
@@ -131,5 +149,3 @@ Assets/
 │  └─ UIManager.cs         # timescale slider, rain toggle
 └─ GameManager.cs
 ```
-
-Open the project in Unity `2021.3.21f1`, then load the `CityGeneration` scene to watch a city build itself, or `CityDemo` to see a finished city populated with pedestrians.
