@@ -147,3 +147,19 @@ Assets/
 │  └─ UIManager.cs         # timescale slider, rain toggle
 └─ GameManager.cs
 ```
+
+---
+
+## Try it for yourself
+
+There are no dependencies beyond Unity itself, everything the project needs is in the repo.
+
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/Basinity/CitySimulator.git
+   ```
+2. Open the folder in **Unity `2021.3.21f1`** (via Unity Hub). Other versions will offer to upgrade the project, which I haven't tested.
+3. Open a scene from `Assets/Scenes/` and press **Play**:
+   - **`CityGeneration`** to watch a city build itself tile by tile.
+   - **`CityDemo`** for a pre-built city already populated with pedestrians.
+4. To edit the tile set and its rules, open the generator tool from the menu bar under **Tools ▸ City Generator**.
